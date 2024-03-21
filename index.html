@@ -1,0 +1,252 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Product page</title>
+    <!-- fontawesome icon css -->
+    <link rel="stylesheet" href="all.css">
+    <!-- bootstrap css  -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="style.css">
+</head>
+
+<body>
+
+    <header class="py-4">
+        <div class="container">
+            <div class="d-flex flex-wrap align-items-center justify-content-between">
+                <div class="logo">
+                    <img src="images/logo.png" alt="logo" height="50px">
+                </div>
+                <div class="cart-icon">
+                    <a class="btn" data-bs-toggle="offcanvas" href="#offcanvasExample" role="button"
+                        aria-controls="offcanvasExample">
+                        <i class="fa-solid fa-cart-shopping fs-2 text-black"></i>
+                    </a>
+
+                    <div class="offcanvas w-25 offcanvas-end" tabindex="-1" id="offcanvasExample"
+                        aria-labelledby="offcanvasExampleLabel">
+                        <div class="offcanvas-header">
+                            <h5 class="offcanvas-title" id="offcanvasExampleLabel">Added Cart</h5>
+                            <button type="button" class="btn-close" data-bs-dismiss="offcanvas"
+                                aria-label="Close"></button>
+                        </div>
+                        <div class="offcanvas-body">
+                            <div class="col-md-12">     
+                                <table class="table table-striped">
+                                  <thead>
+                                      <tr>
+                                        <th scope="col">Image</th>
+                                        <th></th>
+                                        <th scope="col">price</th>
+                                        <th></th>
+                                        <th scope="col">Qty</th>
+                                        <th scope="col">Total</th>
+                                        <th scope="col"></th>
+                                      </tr>
+                                    </thead>
+                                    <tbody id="cartitem">
+                        
+                                        
+                                    </tbody>
+                                </table>
+                                <h4 id="finaltotal"></h4>
+                          </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <div class="container py-4">
+        <div class="text-center">
+            <h1 class="mb-5 pt-4">
+                Discover All Brands
+            </h1>
+        </div>
+    </div>
+    
+
+    <section>
+        <div class="container">
+            <div class="row" id="product"></div>
+        </div>
+    </section>
+   
+
+
+    <!-- bootstrap js file attachment -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+    <script type="text/javascript">
+        let product = [
+            {
+                id: 111,
+                name: "Brown model",
+                price: 240,
+                qty: 1,
+                image: "images/img-2.jpg"
+            },
+            {
+                id: 222,
+                name: "Square colors",
+                price: 230,
+                qty: 1,
+                image: "images/img-3.jpg"
+            },
+            {
+                id: 333,
+                name: "Westige purse",
+                price: 100,
+                qty: 1,
+                image: "images/img-5.jpg"
+            },
+            {
+                id: 444,
+                name: "Zara",
+                price: 180,
+                qty: 1,
+                image: "images/img-6.jpg"
+            },
+            
+        ]
+
+        // view product in home page 
+        const viewproduct = () => {
+            let tbl = "";
+            product.map((val) => {
+                return (
+                    tbl += `
+                    <div class="col-md-3 h-200">
+                        <div class="card" style="width: 18rem;">
+                            <div class="overflow-hidden">
+                                <img src="${val.image}" class="card-img-top img-h" alt="...">
+                            </div>
+                            <div class="card-body">
+                                <h3 class="card-title pb-3">${val.name}</h3>
+                                <div class="d-flex flex-wrap align-items-center justify-content-between">
+                                    <div class="button">
+                                        <a onclick="addcart(${val.id})" class="btn btn-success">Add Cart</a>
+                                    </div>
+                                    <div class="price">
+                                        <div>Rs.${val.price}</div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    `
+                )
+            })
+            document.getElementById('product').innerHTML = tbl;
+        }
+        viewproduct();
+
+        // add to cart 
+        let cart = [];
+        const addcart = (id) => {
+            // product.map((item) => {
+            //     if(item.id == id){
+            //         cart.push(item);
+            //     }
+            // })
+            // alert("old item added to localstorage");
+
+            // product.map((item) => {
+            //     if(item.id == id){
+            //         if(localStorage.getItem('cart')==null || localStorage.getItem('cart')==undefined)
+            //         cart.push(item);
+            //         localStorage.setItem('cart',JSON.stringify(cart));
+            //     }
+            //     else{
+            //         let olditems = JSON.parse(localStorage.getItem('cart'));
+            //         olditems.push(item);
+            //         localStorage.setItem('cart',JSON.stringify('olditems'));
+            //     }
+            // })
+
+            // check data if cart item already exist 
+            let allcart = JSON.parse(localStorage.getItem('cart')) ? JSON.parse(localStorage.getItem('cart')) : [];
+            let dupcart = allcart.find((item) => {
+                return item.id == id;
+            })
+            if(dupcart){
+                alert('Item alreay exist');
+                return false;
+            }
+
+            product.map((item) => {
+                if (item.id == id) {
+                    cart.push(item);
+                    console.log(cart);
+                }
+            })
+            localStorage.setItem('cart', JSON.stringify(cart));
+            alert("Product successfully added in cart");
+        }
+
+        // view items in cart
+        
+        const viewcart = () => {
+            let tbl2 = "";
+            let sum = 0;
+            let allitems = JSON.parse(localStorage.getItem('cart'));            
+            allitems.map((val) => {
+                sum = sum + (val.price * val.qty)  
+                return (
+                    tbl2 += `<tr>
+                                <td>
+                                    <img src="${val.image}" height="90px"> <br>
+                                    ${val.name}
+                                <td>
+                                <td>${val.price}<td>
+                                <td>
+                                    <input type="number" value="${val.qty}" id="qty_${val.id}" onchange="editcart(${val.id})" style="width:40px">    
+                                </td>
+                                <td>${val.price * val.qty}<td>
+                                <td>
+                                    <button type="submit" onclick="removeitem(${val.id})" class="border-0">
+                                        <i class="fa-solid fa-trash-can text-danger fs-4"></i>    
+                                    </button>    
+                                <td>
+                            </tr>
+                            
+                    `
+                )
+            }) 
+            document.getElementById('cartitem').innerHTML = tbl2;
+            document.getElementById('finaltotal').innerHTML = `final total : ${sum}`;
+        }
+        viewcart();
+
+        // removes items in cart 
+        const removeitem = (id) => {
+            let allitems = JSON.parse(localStorage.getItem('cart'));
+            let deleteitems = allitems.filter((val) => {
+                return val.id != id;
+                return false; 
+            })
+            alert("item was deleted")
+            localStorage.setItem('cart',JSON.stringify(deleteitems));
+            viewcart();
+        }
+
+        // update item qty in cart with total 
+        const editcart = (id) => {
+            let qty = document.getElementById(`qty_${id}`).value;
+            let allcart = JSON.parse(localStorage.getItem('cart'));
+            allcart.map((val) => {
+                if(val.id == id){
+                    val.qty = qty;
+                }
+            })
+            localStorage.setItem('cart',JSON.stringify(allcart));
+            alert("cart successfully updated");
+            viewcart();
+        }
+    </script>
+</body>
+
+</html>

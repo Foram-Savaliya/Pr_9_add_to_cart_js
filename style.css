@@ -1,0 +1,10 @@
+header{
+    background-color: antiquewhite;
+}
+.h-200{
+    height: 450px;
+}
+.img-h{
+    height: 286px;
+    object-fit: cover;
+}
